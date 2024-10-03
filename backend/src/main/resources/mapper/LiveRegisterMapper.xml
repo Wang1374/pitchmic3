@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.LiveRegisterDao">
+    <resultMap id="result" type="com.example.demo.entity.LiveRegister">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="admin_id" property="adminId"/>
+        <result column="rtmp_url" property="rtmpUrl"/>
+        <result column="live_start_key" property="liveStartKey"/>
+        <result column="start_date" property="startDate"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="remove_identity" property="removeIdentity"/>
+        <result column="status" property="status"/>
+        <association column="id" property="liveRecords" select="com.example.demo.dao.LiveRecordsDao.getLiveRecordsByLiveId"/>
+        <association column="admin_id" property="user" select="com.example.demo.dao.UserDao.getUserById"/>
+    </resultMap>
+    <select id="getLiveRegister" parameterType="integer" resultMap="result">
+        select * from `live_register` where create_user = #{userId};
+    </select>
+    <select id="getLiveRegisterById" resultType="com.example.demo.entity.LiveRegister">
+        select * from `live_register` where id = #{id}
+    </select>
+</mapper>
+

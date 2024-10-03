@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.LiveStreamDao">
+    <resultMap id="result" type="com.example.demo.entity.LiveStream">
+        <id property="id" column="id"/>
+        <result property="streamKey" column="stream_key" />
+        <result property="liveStreamName" column="live_stream_name" />
+        <result property="streamerId" column="streamer_id" />
+        <result property="liveStreamStartDate" column="live_stream_start_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="createDate" column="create_date" />
+        <result property="removeIdentity" column="remove_identity" />
+        <result property="updateUser" column="update_user" />
+        <result property="createUser" column="create_user" />
+        <result property="status" column="status" />
+    </resultMap>
+    <sql id="query">
+        select
+            id,
+            stream_key as streamKey,
+            live_stream_name as liveStreamName,
+            streamer_id as streamerId,
+            live_stream_start_date as liveStreamStartDate,
+            status,
+            remove_identity as removeIdentity,
+            create_user as createUser,
+            create_date as createDate,
+            update_user as updateUser,
+            update_date as updateDate
+        from livestream
+    </sql>
+    <select id="getLiveStream" parameterType="com.example.demo.entity.LiveStream" resultMap="result">
+        <include refid="query"/>
+        <where>
+            <if test="liveStream.streamKey != null">
+                and streamKey = #{streamKey}
+            </if>
+            <if test=" liveStream.liveStreamName != null">
+                and liveStreamName = #{liveStreamName}
+            </if>
+            <if test=" liveStream.streamerId != null">
+                and streamerId = #{streamerId}
+            </if>
+            <if test=" liveStream.liveStreamStartDate != null">
+                and date_format(live_start_date, 'YYYY-MM-DD') = date_format(#{liveStreamStartDate}, 'YYYY-MM-DD' )
+            </if>
+            <if test=" liveStream.status != null">
+                and status = #{status}
+            </if>
+            <if test=" liveStream.removeIdentity != null">
+                and removeIdentity = #{removeIdentity}
+            </if>
+            <if test=" liveStream.createUser != null">
+                and createUser = #{createUser}
+            </if>
+            <if test="liveStream.createDate != null">
+                and date_format(create_date,'YYYY-MM-DD') = date_format(#{createDate},'YYYY-MM-DD')
+            </if>
+            <if test=" liveStream.updateUser != null">
+                and updateUser = #{updateUser}
+            </if>
+            <if test=" liveStreamupdateDate != null">
+                and date_format(update_date,'YYYY-MM-DD') = date_format(#{updateDate},'YYYY-MM-DD')
+            </if>
+        </where>
+    </select>
+
+    <insert id="createLiveStream">
+        insert into livestream values(#{id}, #{streamKey},#{liveStreamName},#{streamerId},#{liveStreamStartDate},#{status},#{removeIdentity},#{createUser},#{createDate},#{updateUser},#{updateDate})
+    </insert>
+</mapper>
+
+
+
+

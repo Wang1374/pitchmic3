@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.RoleDao">
+    <resultMap id="result" type="com.example.demo.entity.Role">
+        <id property="id" column="id"/>
+        <result property="roleValue" column="role_value"/>
+        <result property="roleName" column="role_name"/>
+        <result property="authority" column="authority"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="createDate" column="create_date"/>
+        <result property="removeIdentity" column="remove_identity"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="createUser" column="create_user"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <select id="getRoleByUserId" parameterType="integer" resultMap="result">
+        SELECT
+        re.authority AS authority,
+        re.create_date AS create_date,
+        re.create_user AS create_user,
+        re.id AS id,
+        re.remove_identity AS remove_identity,
+        re.role_value AS role_value,
+        re.role_name as role_name,
+        re.update_date AS update_date,
+        re.update_user AS update_user
+        FROM
+        role AS re
+        INNER JOIN user_and_role AS ur ON re.id = ur.role_id
+        WHERE
+        ur.user_id = #{userId};
+    </select>
+
+    <select id="getRoleInfo" parameterType="com.example.demo.entity.Role" resultMap="result">
+        select * from role
+        <where>
+            <if test="role.roleValue != null">
+                and role_value = #{role.roleValue}
+            </if>
+            <if test="role.authority != null">
+                and authority = #{role.authority}
+            </if>
+        </where>
+    </select>
+
+    <select id="getRoles" resultMap="result">
+        select * from role
+    </select>
+    <select id="getRoleById" resultMap="result">
+        select * from role where id = #{id}
+    </select>
+
+    <select id="getRoleByRoleValue" parameterType="string" resultMap="result">
+        select * from role where role_value = #{roleValue}
+    </select>
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.LiveRecordsDao">
+    <resultMap id="result" type="com.example.demo.entity.LiveRecords">
+        <id property="id" column="id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="liveId" column="live_id"/>
+        <result property="targetTeamId" column="target_team_id"/>
+        <result property="registerDate" column="register_date"/>
+        <result property="filePathId" column="file_path_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="commentatorId" column="commentator_id"/>
+<!--        <result property="languageId" column="language_id"/>-->
+        <result property="updateDate" column="update_date"/>
+        <result property="createDate" column="create_date"/>
+        <result property="removeIdentity" column="remove_identity"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="createUser" column="create_user"/>
+        <result property="status" column="status"/>
+        <association property="targetTeam" column="target_team_id" select="com.example.demo.dao.TeamDao.getTeamById" />
+        <association property="team" column="team_id" select="com.example.demo.dao.TeamDao.getTeamById" />
+        <association property="liveRegister" column="live_id" select="com.example.demo.dao.LiveRegisterDao.selectById"/>
+        <association property="game" column="game_id" select="com.example.demo.dao.GameDao.selectById"/>
+<!--        <association property="language" column="language_id" select="com.example.demo.dao.LanguageDao.selectById"/>-->
+        <collection property="languageRecords" column="id" select="com.example.demo.dao.LiveLanguageRecordsDao.selectByLiveRecordsId"/>
+    </resultMap>
+
+    <resultMap id="result1" type="com.example.demo.entity.LiveRecords">
+        <id property="id" column="id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="liveId" column="live_id"/>
+        <result property="targetTeamId" column="target_team_id"/>
+        <result property="registerDate" column="register_date"/>
+        <result property="filePathId" column="file_path_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="commentatorId" column="commentator_id"/>
+        <!--        <result property="languageId" column="language_id"/>-->
+        <result property="updateDate" column="update_date"/>
+        <result property="createDate" column="create_date"/>
+        <result property="removeIdentity" column="remove_identity"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="createUser" column="create_user"/>
+        <result property="status" column="status"/>
+        <association property="targetTeam" column="target_team_id" select="com.example.demo.dao.TeamDao.getTeamById" />
+        <association property="team" column="team_id" select="com.example.demo.dao.TeamDao.getTeamById" />
+        <association property="liveRegister" column="live_id" select="com.example.demo.dao.LiveRegisterDao.selectById"/>
+        <association property="game" column="game_id" select="com.example.demo.dao.GameDao.selectById"/>
+        <!--        <association property="language" column="language_id" select="com.example.demo.dao.LanguageDao.selectById"/>-->
+<!--        <collection property="languageRecords" column="id" select="com.example.demo.dao.LiveLanguageRecordsDao.selectByLiveRecordsId"/>-->
+    </resultMap>
+
+    <sql id="query">
+        select * from live_records
+    </sql>
+
+    <select id="isRegister" parameterType="com.example.demo.entity.LiveRegister" resultMap="result">
+        <include refid="query" />
+            where
+                (target_team_id = #{register.liveRecords.targetTeamId}
+            or
+                team_id = #{register.liveRecords.targetTeamId})
+            and
+               date_format(register_date,  '%Y-%m-%d') = date_format(#{register.startDate}, '%Y-%m-%d');
+    </select>
+
+    <select id="getLiveRecordsByLiveId" resultMap="result" parameterType="integer">
+        <include refid="query"/>
+        where live_id = #{liveId}
+    </select>
+    <select id="getLiveRecords" parameterType="com.example.demo.entity.LiveRecords" resultMap="result">
+        <include refid="query" />
+        <where>
+            <if test="liveRecords.registerDate != null">
+                and date_format(register_date, '%y-%m-%d') = date_format(#{liveRecords.registerDate}, '%y-%m-%d')
+            </if>
+        </where>
+        order by register_date ASC;
+    </select>
+    <select id="getLiveRecordsById" resultMap="result" parameterType="integer">
+        <include refid="query"/> where id = #{id}
+    </select>
+    <select id="getLiveRecordsByIdWithoutLanguage" resultMap="result1" parameterType="integer">
+        <include refid="query"/> where id = #{id}
+    </select>
+</mapper>
