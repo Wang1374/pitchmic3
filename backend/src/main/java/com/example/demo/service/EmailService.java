@@ -1,8 +1,0 @@
-package com.example.demo.service;
-
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.demo.entity.EmailConfig;
-import com.example.demo.entity.Language;
-
-public interface EmailService extends IService<EmailConfig> {
-}
