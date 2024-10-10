@@ -4,7 +4,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh "ls -a"	
-                sh "./pack.sh"
+                sh "mvn clean package"
             }
         }
     }
